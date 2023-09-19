@@ -10,8 +10,20 @@
     import 'relative/path/to/stylesheet.scss';
 
 */
+.todolist{
+    display: flex;
+    justify-content: center;
+}
+.contenttask {
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    width:500px;
+    min-height: 400px;
+    background-color: bisque;
+}
 li{
-    width: 500px;
+    width: 300px;
     display: flex;
     justify-content: space-between;
     align-items: center;

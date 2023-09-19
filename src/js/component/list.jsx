@@ -6,6 +6,7 @@ const List = () => {
 
 const[data, setData]=useState([]);
 const[tareaup, setTareaup]=useState({});
+const [invisible, setinVisible]= useState([]);
 
 const url = "https://playground.4geeks.com/apis/fake/todos/user/Holito";
 
@@ -73,9 +74,12 @@ function handleChange(e){
 
 function handleKeydown(e){
 	console.log(e);
+    
 	if(e.key=="Enter"){
-		setData(current=>([...current, tareaup]));
-		setTareaup({label:"", done:false})
+       
+        setData(data.filter(dato=>dato.label!="No hay tareas"));
+        setData(current=>([...current, tareaup]));
+        setTareaup({label:"", done:false})
 	}
 }
 
@@ -110,13 +114,34 @@ useEffect(() => {
         .catch(error => console.error(error))
     };
 
+    function ondelete(e){
+        const index = e._targetInst.key
+        let array = []
+        for(let i=0; i<data.length; i++){
+            if(i==index){
+                array.push(1)
+            }else{array.push(0)}   
+        }
+        setinVisible(array)
+    };
+   
+    function offdelete(){
+        let afuera=[]
+        for(let j=0; j<data.length; j++){
+            afuera.push(0)        
+        }
+        setinVisible(afuera);
+    }
+    
+
 
 	return (
-		<div className="text-center">
+		<div className="cardtask">
 			<input type="text" className="inputTask" placeholder="What needs to be done?" value={tareaup.label} onChange={handleChange} onKeyDown={handleKeydown}></input>
 			<ul>
-				{data?.map((dato, index) => <li key={index}><p>{dato.label}</p><button onClick={()=>(handledelete(index))}>X</button></li>)}
+				{data?.map((dato, index) => <li key={index} onMouseEnter={ondelete}  onMouseLeave={offdelete}><p>{dato.label}</p><button style={{opacity:invisible.length != 0 ? invisible[index]:0 }} onClick={()=>(handledelete(index))}>X</button></li>)}
 			</ul>
+            <div><p>{data.length!=0? data.length + "item left": "No hay tareas, añadir tareas"}</p></div>
 			
 		</div>
 	);

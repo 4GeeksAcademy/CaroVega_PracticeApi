@@ -6,10 +6,12 @@ import rigoImage from "../../img/rigo-baby.jpg";
 //create your first component
 const Home = () => {
 	return (
-		<div className="text-center">
-			<h1>Info api</h1>
-			<div className="card">
-				<List/>
+		<div className="todolist">
+			<div className="contenttask">
+				<h1>Info api</h1>
+				<div className="card">
+					<List/>
+				</div>
 			</div>
 		</div>
 	);
