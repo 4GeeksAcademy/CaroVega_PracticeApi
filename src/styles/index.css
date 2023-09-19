@@ -10,3 +10,9 @@
     import 'relative/path/to/stylesheet.scss';
 
 */
+li{
+    width: 500px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
