@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 
 const List = () => {
 
-const[data, setData]=useState([]);
+const[data, setData]=useState(null);
 const[tareaup, setTareaup]=useState({ label: "" });
 const [invisible, setinVisible]= useState([]);
 const [numTask, setNumtask]=useState("");
@@ -15,8 +15,8 @@ useEffect(() => {
   }, []);
 
   const gettasks = () =>{
-    const savedData = JSON.parse(localStorage.getItem('tareas'));
-    setData(savedData || []);
+    // const savedData = JSON.parse(localStorage.getItem('tareas'));
+    // setData(savedData || []);
 	fetch(url, {
         method: 'GET', // or 'POST'
         headers:{
@@ -68,7 +68,10 @@ useEffect(() => {
 
   function handledelete(position){
 	const datoeliminar = data[position];
-	setData(prevData => prevData.filter(dato => dato !== datoeliminar));
+    if(data.length==1){
+        buttonclean();
+    }else{
+	setData(prevData => prevData.filter(dato => dato !== datoeliminar));}
     numlist();
 }
 function handleChange(e){
@@ -88,14 +91,8 @@ function handleKeydown(e){
 }
 
 useEffect(() => {
-    if (data.length === 0 || data.some((item) => item.label === "No hay tareas")) {
-        updatetask([{ label: "No hay tareas", done: false }]);
-  
-	// if(data.length==0){
-	// 	updatetask([{label:"No hay tareas", done:false}]);
-    
-	}else{
-    updatetask(data);
+    if (data != null ) {
+        updatetask(data);
     //numlist();
 }
   }, [data]);
