@@ -9,7 +9,7 @@ const Home = () => {
 	return (
 		<div className="todolist">
 			<div className="contenttask">
-				<h1>Info api</h1>
+				<h1>Todos</h1>
 				<div className="card">
 					<List/>
 				</div>

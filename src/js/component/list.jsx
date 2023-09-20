@@ -112,9 +112,8 @@ useEffect(() => {
             if (res.status>= 200 && res.status<=300){
                 console.log("el request se hizo bien");
                 return res.json();
-            }else if (res.status ==404){
-                console.log(`hubo un error ${res.status} en el request`)
-                createuser();
+            }else{
+                console.log(`hubo un error ${res.status} en el request`)  
             }
         })
         .then(tareas => {
@@ -128,11 +127,16 @@ useEffect(() => {
     function ondelete(ind){
         const index = ind;
         let array = []
-        for(let i=0; i<data.length; i++){
-            if(i==index){
-                array.push(1)
+        if(data[index].label==="No hay tareas"){
+            for(let i=0; i<data.length; i++){
+                    array.push(0)
+                }
+        }else{        
+            for(let i=0; i<data.length; i++){
+                if(i==index){
+                    array.push(1)
             }else{array.push(0)}   
-        }
+        }}
         setinVisible(array);
         numlist();
     };
@@ -162,15 +166,21 @@ useEffect(() => {
                  
     }
 
+    function buttonclean(){
+        
+        setData([{ label: "No hay tareas", done: false }]);
+        
+    }
+
 
 	return (
 		<div className="cardtask">
 			<input type="text" className="inputTask" placeholder="What needs to be done?" value={tareaup.label} onChange={handleChange} onKeyDown={handleKeydown}></input>
 			<ul>
-				{data?.map((dato, index) => <li key={index} onMouseEnter={() =>ondelete(index)}  onMouseLeave={() => offdelete}><p>{dato.label}</p><button style={{opacity:invisible.length != 0 ? invisible[index]:0 }} onClick={()=>(handledelete(index))}>X</button></li>)}
+				{data?.map((dato, index) => <li key={index} onMouseEnter={() =>ondelete(index)}  onMouseLeave={() => offdelete()}><p>{dato.label}</p><button style={{opacity:invisible.length != 0 ? invisible[index]:0 }} onClick={()=>(handledelete(index))}>X</button></li>)}
 			</ul>
             <div><p>{numTask}</p></div>
-			
+			<div><button className="button"onClick={()=>{buttonclean()}}>Clean tasks</button></div>
 		</div>
 	);
 };
