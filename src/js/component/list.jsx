@@ -15,11 +15,13 @@ useEffect(() => {
   }, []);
 
   const gettasks = () =>{
+    const savedData = JSON.parse(localStorage.getItem('tareas'));
+    setData(savedData || []);
 	fetch(url, {
         method: 'GET', // or 'POST'
         headers:{
-        'Content-Type': 'application/json'
-        }
+        'Content-Type': 'application/json',
+        },
         })
         .then(res => {
             if (res.status>= 200 && res.status<=300){
@@ -46,8 +48,8 @@ useEffect(() => {
         method: 'POST', // or 'POST'
 		body:JSON.stringify([]),
         headers:{
-        'Content-Type': 'application/json'
-        }
+        'Content-Type': 'application/json',
+        },
         })
         .then(res => {
             if (res.status>= 200 && res.status<=300){
@@ -66,33 +68,35 @@ useEffect(() => {
 
   function handledelete(position){
 	const datoeliminar = data[position];
-	//setData(data.filter(dato=>dato!=datoeliminar));
 	setData(prevData => prevData.filter(dato => dato !== datoeliminar));
+    numlist();
 }
 function handleChange(e){
-	setTareaup({label:e.target.value, done:false})
+	setTareaup({label:e.target.value, done:false});
 }
 
 function handleKeydown(e){
-	console.log(e);
-    
+	    
 	if(e.key=="Enter"){
         const newLabel = tareaup.label.trim();
         if (newLabel !== ""){
         setData(data.filter(dato=>dato.label!="No hay tareas"));
         setData(current=>([...current, tareaup]));
         setTareaup({label:"", done:false})}
+        numlist();
 	}
 }
 
 useEffect(() => {
-    
-	if(data.length==0){
-		updatetask([{label:"No hay tareas", done:false}]);
+    if (data.length === 0 || data.some((item) => item.label === "No hay tareas")) {
+        updatetask([{ label: "No hay tareas", done: false }]);
+  
+	// if(data.length==0){
+	// 	updatetask([{label:"No hay tareas", done:false}]);
     
 	}else{
     updatetask(data);
-    numlist();
+    //numlist();
 }
   }, [data]);
 
@@ -101,8 +105,8 @@ useEffect(() => {
         method: 'PUT', // or 'POST'
 		body:JSON.stringify(todos),
         headers:{
-        'Content-Type': 'application/json'
-        }
+        'Content-Type': 'application/json',
+        },
         })
         .then(res => {
             if (res.status>= 200 && res.status<=300){
@@ -117,7 +121,8 @@ useEffect(() => {
 			console.log(tareas);
 		}
          )
-        .catch(error => console.error(error))
+        .catch(error => console.error(error));
+        numlist();
     };
 
     function ondelete(ind){
@@ -128,7 +133,8 @@ useEffect(() => {
                 array.push(1)
             }else{array.push(0)}   
         }
-        setinVisible(array)
+        setinVisible(array);
+        numlist();
     };
    
     function offdelete(){
@@ -137,6 +143,7 @@ useEffect(() => {
             afuera.push(0)        
         }
         setinVisible(afuera);
+        numlist();
     }
     
     function numlist(){
@@ -144,8 +151,8 @@ useEffect(() => {
         if (data.some((item) => item.label === "No hay tareas")) {
             num = "0 item left";
             setNumtask(num);
-          } else if (data.length == 0){
-            num = "0 item left";
+          } else if(data.length ===1){
+            num = "1 item left";
           }
           else{
             num = `${data.length} item left`;
