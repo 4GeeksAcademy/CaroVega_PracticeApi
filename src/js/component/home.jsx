@@ -1,4 +1,5 @@
 import React from "react";
+import {useState, useEffect} from "react";
 import List from "./list"
 //include images into your bundle
 import rigoImage from "../../img/rigo-baby.jpg";

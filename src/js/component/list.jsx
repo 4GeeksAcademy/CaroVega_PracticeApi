@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-import {useState, useEffect} from "react";
 
 const List = () => {
 
 const[data, setData]=useState([]);
-const[tareaup, setTareaup]=useState({});
+const[tareaup, setTareaup]=useState({ label: "" });
 const [invisible, setinVisible]= useState([]);
+const [numTask, setNumtask]=useState("");
 
 const url = "https://playground.4geeks.com/apis/fake/todos/user/Holito";
 
@@ -31,8 +31,9 @@ useEffect(() => {
             }
         })
         .then(tareas => {
-			console.log(tareas);
-			setData(tareas);
+            if (JSON.stringify(tareas) !== JSON.stringify(data)) {
+                setData(tareas);
+              }
         }
          )
         .catch(error => console.error(error))
@@ -64,9 +65,9 @@ useEffect(() => {
   };
 
   function handledelete(position){
-	let datoeliminar = data[position];
-	setData(data.filter(dato=>dato!=datoeliminar));
-	
+	const datoeliminar = data[position];
+	//setData(data.filter(dato=>dato!=datoeliminar));
+	setData(prevData => prevData.filter(dato => dato !== datoeliminar));
 }
 function handleChange(e){
 	setTareaup({label:e.target.value, done:false})
@@ -76,18 +77,23 @@ function handleKeydown(e){
 	console.log(e);
     
 	if(e.key=="Enter"){
-       
+        const newLabel = tareaup.label.trim();
+        if (newLabel !== ""){
         setData(data.filter(dato=>dato.label!="No hay tareas"));
         setData(current=>([...current, tareaup]));
-        setTareaup({label:"", done:false})
+        setTareaup({label:"", done:false})}
 	}
 }
 
 useEffect(() => {
+    
 	if(data.length==0){
-		updatetask([{label:"No hay tareas", done:false}])
+		updatetask([{label:"No hay tareas", done:false}]);
+    
 	}else{
-    updatetask(data);}
+    updatetask(data);
+    numlist();
+}
   }, [data]);
 
   const updatetask = (todos) =>{
@@ -114,8 +120,8 @@ useEffect(() => {
         .catch(error => console.error(error))
     };
 
-    function ondelete(e){
-        const index = e._targetInst.key
+    function ondelete(ind){
+        const index = ind;
         let array = []
         for(let i=0; i<data.length; i++){
             if(i==index){
@@ -133,15 +139,30 @@ useEffect(() => {
         setinVisible(afuera);
     }
     
+    function numlist(){
+        let num = "";
+        if (data.some((item) => item.label === "No hay tareas")) {
+            num = "0 item left";
+            setNumtask(num);
+          } else if (data.length == 0){
+            num = "0 item left";
+          }
+          else{
+            num = `${data.length} item left`;
+           
+          }
+          setNumtask(num);
+                 
+    }
 
 
 	return (
 		<div className="cardtask">
 			<input type="text" className="inputTask" placeholder="What needs to be done?" value={tareaup.label} onChange={handleChange} onKeyDown={handleKeydown}></input>
 			<ul>
-				{data?.map((dato, index) => <li key={index} onMouseEnter={ondelete}  onMouseLeave={offdelete}><p>{dato.label}</p><button style={{opacity:invisible.length != 0 ? invisible[index]:0 }} onClick={()=>(handledelete(index))}>X</button></li>)}
+				{data?.map((dato, index) => <li key={index} onMouseEnter={() =>ondelete(index)}  onMouseLeave={() => offdelete}><p>{dato.label}</p><button style={{opacity:invisible.length != 0 ? invisible[index]:0 }} onClick={()=>(handledelete(index))}>X</button></li>)}
 			</ul>
-            <div><p>{data.length!=0? data.length + "item left": "No hay tareas, añadir tareas"}</p></div>
+            <div><p>{numTask}</p></div>
 			
 		</div>
 	);
